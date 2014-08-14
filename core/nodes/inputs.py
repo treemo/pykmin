@@ -1,7 +1,28 @@
 import asyncio
 import logging
-
 from core.managers import inputs
+
+
+class BaseProtocol(asyncio.Protocol):
+    transport = None
+    handler = None
+
+    def __init__(self, handler):
+        self.handler = handler
+
+    def connection_made(self, transport):
+        self.transport = transport
+
+    def data_received(self, data):
+        task = asyncio.Task(self.handler(data))
+        task.add_done_callback(lambda: self.handler(data))
+        task.add_done_callback(self.next_step)
+
+        self.transport.close()
+
+    def next_step(self, task):
+        inputs.add_to_queue('test_input', task)
+
 
 class Input(object):
 
@@ -12,15 +33,15 @@ class Input(object):
     def start(self):
         pass
 
-    def next(self):
-        inputs.add_to_queue('test_input')
-
-
 class SocketInput(Input):
-    protocol = None
+    protocol = BaseProtocol
+    treatment = None
+    server = None
     address = '127.0.0.1'
     port = 8888
 
     def start(self):
-        coroutine = self.loop.create_server(self.protocol, self.address, self.port)
-        self.loop.run_until_complete(coroutine)
+        proto = self.protocol(self.treatment)
+        coro = self.loop.create_server(lambda: proto,
+                                        self.address, self.port)
+        self.server = self.loop.run_until_complete(coro)

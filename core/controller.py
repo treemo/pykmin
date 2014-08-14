@@ -1,7 +1,7 @@
 import asyncio
 import yaml
 import logging.config
-from core.managers import inputs, nodes
+from core.managers import inputs, outputs, nodes
 
 class Controller(object):
     def __init__(self):
@@ -37,5 +37,16 @@ class Controller(object):
     def autodiscover_outputs(self):
         self._import_nodes('output')
 
+    @asyncio.coroutine
+    def handle_finished_tasks(self):
+        while True:
+            for input, task in inputs.finished():
+                next_step = self.mapping.get(input)
+                if next_step:
+                    outputs.get_element(next_step).start(task)
+                inputs.remove_from_queue(input, task)
+            yield from asyncio.sleep(0.5)
+
     def start(self):
+        asyncio.async(self.handle_finished_tasks(), loop=self.loop)
         self.loop.run_forever()

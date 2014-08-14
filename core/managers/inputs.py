@@ -11,5 +11,8 @@ def register(name, object):
 def finished():
     return _QUEUE
 
-def add_to_queue(name):
-    _QUEUE.append(name)
+def add_to_queue(name, task):
+    _QUEUE.append((name, task))
+
+def remove_from_queue(name, task):
+    _QUEUE.remove((name, task))
