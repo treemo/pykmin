@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from core.managers import inputs
+from core.managers import tasks
 
 
 class BaseProtocol(asyncio.Protocol):
@@ -21,7 +21,7 @@ class BaseProtocol(asyncio.Protocol):
         self.transport.close()
 
     def next_step(self, task):
-        inputs.add_to_queue('test_input', task)
+        tasks.add_to_queue('test_input', task)
 
 
 class Input(object):

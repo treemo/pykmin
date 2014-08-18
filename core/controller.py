@@ -1,7 +1,13 @@
 import asyncio
 import yaml
 import logging.config
-from core.managers import inputs, outputs, nodes
+from core.managers import inputs, outputs, nodes, filters, tasks
+from functools import reduce
+
+
+def getFromDict(data_dict, key_list):
+    return reduce(lambda d, k: d[k], key_list, data_dict)
+
 
 class Controller(object):
     def __init__(self):
@@ -13,7 +19,6 @@ class Controller(object):
         with open('configs/logger.conf') as file:
             config = yaml.load(file)
             logging.config.dictConfig(config)
-
 
     def _init_mapping(self):
         with open('configs/mapping.conf') as f:
@@ -34,17 +39,33 @@ class Controller(object):
             if name in self.mapping:
                 inputs._REGISTRY[name].start()
 
+    def autodiscover_filters(self):
+        self._import_nodes('filter')
+
     def autodiscover_outputs(self):
         self._import_nodes('output')
 
     @asyncio.coroutine
     def handle_finished_tasks(self):
         while True:
-            for input, task in inputs.finished():
-                next_step = self.mapping.get(input)
-                if next_step:
-                    outputs.get_element(next_step).start(task)
-                inputs.remove_from_queue(input, task)
+            for name, t_object, prev in tasks.finished():
+                if not prev:
+                    path = [name]
+                else:
+                    path = prev + [name]
+                next_steps = getFromDict(self.mapping, path)
+
+                if isinstance(next_steps, dict):
+                    next_steps = next_steps.keys()
+                else:
+                    next_steps = (next_steps,)
+
+                for next_step in next_steps:
+                    if next_step and 'output' in next_step:
+                        outputs.get_element(next_step).start(t_object)
+                    elif next_step and 'filter' in next_step:
+                        filters.get_element(next_step).start(t_object, path)
+                tasks.remove_from_queue(name, t_object, prev)
             yield from asyncio.sleep(0.5)
 
     def start(self):
