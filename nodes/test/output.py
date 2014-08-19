@@ -1,13 +1,8 @@
+from core.nodes.outputs import OutputFile
 from core.managers import outputs
 
 
-class ToFile():
-    def __init__(self, name):
-        pass
-
-    def start(self, task):
-        data = task.result()
-        print(data)
-
+class ToFile(OutputFile):
+    file = 'test.log'
 
 outputs.register('test_output', ToFile)

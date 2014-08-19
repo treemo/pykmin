@@ -35,6 +35,7 @@ class Input(object):
     def start(self):
         pass
 
+
 class SocketInput(Input):
     protocol = BaseProtocol
     treatment = None
