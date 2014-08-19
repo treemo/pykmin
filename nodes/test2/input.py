@@ -16,4 +16,4 @@ class ModuleInput(SocketInput):
         self.logger.info('Test input 2 launched')
         super(ModuleInput, self).start()
 
-inputs.register('test_input2', ModuleInput())
+inputs.register('test_input2', ModuleInput)
