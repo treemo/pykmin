@@ -6,7 +6,7 @@ _REGISTRY = OrderedDict()
 
 
 def register(name, object):
-    _REGISTRY[name] = object
+    _REGISTRY[name] = object(name)
 
 
 def get_element(name):
