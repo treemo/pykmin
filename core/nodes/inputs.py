@@ -7,7 +7,8 @@ class BaseProtocol(asyncio.Protocol):
     transport = None
     handler = None
 
-    def __init__(self, handler):
+    def __init__(self, name, handler):
+        self.name = name
         self.handler = handler
 
     def connection_made(self, transport):
@@ -21,12 +22,13 @@ class BaseProtocol(asyncio.Protocol):
         self.transport.close()
 
     def next_step(self, task):
-        tasks.add_to_queue('test_input', task)
+        tasks.add_to_queue(self.name, task)
 
 
 class Input(object):
 
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.logger = logging.getLogger(self.__class__.__name__)
         self.loop = asyncio.get_event_loop()
 
@@ -41,7 +43,7 @@ class SocketInput(Input):
     port = 8888
 
     def start(self):
-        proto = self.protocol(self.treatment)
+        proto = self.protocol(self.name, self.treatment)
         coro = self.loop.create_server(lambda: proto,
                                         self.address, self.port)
         self.server = self.loop.run_until_complete(coro)
