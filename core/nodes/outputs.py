@@ -1,4 +1,6 @@
 class Output(object):
+    data = ''
+
     def __init__(self, name):
         self.name = name
 
@@ -10,19 +12,19 @@ class OutputFile(Output):
     file = ''
 
     def start(self, task):
+        self.data = task.result()['data']
+
         if not self.file:
             raise AttributeError('You need to set file attribute')
 
         # TODO: Vérifier que le chemin existe avant d'ouvrir le fichier
 
-
         with open(self.file, 'wb') as f:
-            f.write(task.result()['data'])
+            f.write(self.data)
 
 
 class OutputSocket(Output):
     transport = None
-    data = ''
 
     def start(self, task):
         self.transport = task.result()['transport']
