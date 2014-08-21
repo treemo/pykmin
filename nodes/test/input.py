@@ -4,8 +4,8 @@ from core.managers import inputs
 
 
 @asyncio.coroutine
-def treat_data(data):
-    return data
+def treat_data(data, transport):
+    return {'data': data, 'transport': transport}
 
 
 class ModuleInput(SocketInput):

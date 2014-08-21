@@ -58,7 +58,7 @@ class Controller(object):
                 if isinstance(next_steps, dict):
                     next_steps = next_steps.keys()
                 else:
-                    next_steps = (next_steps,)
+                    next_steps = next_steps.split()
 
                 for next_step in next_steps:
                     if next_step and 'output' in next_step:
@@ -66,7 +66,7 @@ class Controller(object):
                     elif next_step and 'filter' in next_step:
                         filters.get_element(next_step).start(t_object, path)
                 tasks.remove_from_queue(name, t_object, prev)
-            yield from asyncio.sleep(0.5)
+            yield from asyncio.sleep(0.0000000005)
 
     def start(self):
         asyncio.async(self.handle_finished_tasks(), loop=self.loop)

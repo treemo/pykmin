@@ -15,11 +15,8 @@ class BaseProtocol(asyncio.Protocol):
         self.transport = transport
 
     def data_received(self, data):
-        task = asyncio.Task(self.handler(data))
-        task.add_done_callback(lambda: self.handler(data))
+        task = asyncio.Task(self.handler(data, self.transport))
         task.add_done_callback(self.next_step)
-
-        self.transport.close()
 
     def next_step(self, task):
         tasks.add_to_queue(self.name, task)
