@@ -45,3 +45,6 @@ class SocketInput(Input):
         coro = self.loop.create_server(lambda: proto,
                                         self.address, self.port)
         self.server = self.loop.run_until_complete(coro)
+
+    def stop(self):
+        self.server.close()
