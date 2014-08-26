@@ -11,3 +11,7 @@ def register(name, object):
 
 def get_element(name):
     return _REGISTRY.get(name)
+
+
+def get_all_elements():
+    return _REGISTRY.keys()
