@@ -12,7 +12,6 @@ class ModuleInput(SocketInput):
 
     def start(self):
         self.treatment = treat_data
-        self.logger.info('API listener launched')
         super(ModuleInput, self).start()
 
 inputs.register('pykmin_api_listener', ModuleInput)

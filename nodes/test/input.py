@@ -12,7 +12,6 @@ class ModuleInput(SocketInput):
 
     def start(self):
         self.treatment = treat_data
-        self.logger.info('Test input launched')
         super(ModuleInput, self).start()
 
 inputs.register('test_input', ModuleInput)
