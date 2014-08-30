@@ -14,6 +14,7 @@ class Controller(object):
         self._init_mapping()
         self._init_logger()
         self.loop = asyncio.get_event_loop()
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def _init_logger(self):
         with open('configs/logger.conf') as file:
@@ -29,12 +30,11 @@ class Controller(object):
             try:
                 input_path = 'nodes.%s.%s' % (module, submodule_name)
                 __import__(input_path)
-            except ImportError:
-                pass
+            except ImportError as e:
+                self.logger.error(e)
 
     def autodiscover_inputs(self):
         self._import_nodes('input')
-
         for name in inputs._REGISTRY:
             if name in self.mapping:
                 inputs._REGISTRY[name].start()
