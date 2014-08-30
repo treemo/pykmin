@@ -1,18 +1,8 @@
-from core.managers import filters, tasks, inputs
+from core.managers import filters, inputs
+from core.nodes.filters import BaseFilter
 
 
-class OrderHandler(object):
-
-    def __init__(self, name):
-        self.name = name
-
-    def start(self, task, prev):
-        result = task.result()
-        data = result['data']
-        result['data'] = self.filter(data)
-        task._result = result
-
-        tasks.add_to_queue(self.name, task, prev)
+class OrderHandler(BaseFilter):
 
     def filter(self, data):
         data = data.decode('utf-8')
