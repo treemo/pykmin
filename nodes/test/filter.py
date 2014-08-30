@@ -1,4 +1,4 @@
-from core.managers import tasks, filters
+from core.managers import filters
 from core.nodes.filters import BaseFilter
 
 
