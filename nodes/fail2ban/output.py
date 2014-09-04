@@ -1,11 +1,11 @@
-from core.nodes.outputs import Output
+from core.nodes.outputs import OutputFile
 from core.managers import outputs
 
 
-class ToFile(Output):
+class ToFile(OutputFile):
+    file = 'f2b.log'
 
-    def start(self, task):
-        super(ToFile, self).start(task)
-        print(self.data)
+    def write(self, data):
+        return '%s is banned!' % data
 
 outputs.register('f2b_output', ToFile)

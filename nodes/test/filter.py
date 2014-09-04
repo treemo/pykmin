@@ -5,6 +5,6 @@ from core.nodes.filters import BaseFilter
 class ModuleFilter(BaseFilter):
 
     def filter(self, data):
-        return data + b'a'
+        return '%sa' % data
 
 filters.register('test_filter', ModuleFilter)

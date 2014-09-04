@@ -13,9 +13,14 @@ class BaseFilter(object):
             return
 
         data = result['data']
-        result['data'] = []
-        for line in data:
-            result['data'].append(self.filter(line))
+
+        if isinstance(data, list):
+            result['data'] = []
+            for line in data:
+                result['data'].append(self.filter(line))
+        else:
+            result['data'] = self.filter(data)
+
         task._result = result
 
         tasks.add_to_queue(self.name, task, prev)

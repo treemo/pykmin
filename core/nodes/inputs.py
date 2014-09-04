@@ -19,6 +19,7 @@ class BaseProtocol(asyncio.Protocol):
         self.transport = transport
 
     def data_received(self, data):
+        data = data.decode().rstrip()
         task = asyncio.Task(self.handler(data, self.transport))
         task.add_done_callback(self.next_step)
 

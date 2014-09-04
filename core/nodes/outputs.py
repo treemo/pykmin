@@ -19,9 +19,16 @@ class OutputFile(Output):
 
         # TODO: Vérifier que le chemin existe avant d'ouvrir le fichier
 
-        with open(self.file, 'wb') as f:
-            f.write(self.data)
+        with open(self.file, 'w') as f:
+            if isinstance(self.data, list):
+                for data in self.data:
+                    line = self.write(data)
+                    f.write(line)
+            else:
+                f.write(self.write(self.data))
 
+    def write(self, data):
+        return data
 
 class OutputSocket(Output):
     transport = None
@@ -35,5 +42,5 @@ class OutputSocket(Output):
         if data is None:
             return
 
-        self.transport.write(data)
+        self.transport.write(data.encode())
         self.transport.close()
