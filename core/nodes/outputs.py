@@ -19,13 +19,14 @@ class OutputFile(Output):
 
         # TODO: Vérifier que le chemin existe avant d'ouvrir le fichier
 
-        with open(self.file, 'w') as f:
+        with open(self.file, 'a') as f:
             if isinstance(self.data, list):
                 for data in self.data:
                     line = self.write(data)
-                    f.write(line)
+                    f.write(line+'\n')
             else:
-                f.write(self.write(self.data))
+                line = self.write(self.data)
+                f.write(line+'\n')
 
     def write(self, data):
         return data
