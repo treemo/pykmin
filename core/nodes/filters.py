@@ -13,7 +13,9 @@ class BaseFilter(object):
             return
 
         data = result['data']
-        result['data'] = self.filter(data)
+        result['data'] = []
+        for line in data:
+            result['data'].append(self.filter(line))
         task._result = result
 
         tasks.add_to_queue(self.name, task, prev)
