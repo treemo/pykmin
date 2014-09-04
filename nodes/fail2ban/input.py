@@ -3,6 +3,6 @@ from core.managers import inputs
 
 
 class ModuleInput(FileInput):
-    filename = 'i3.log'
+    filename = 'fail2ban.log'
 
-inputs.register('test_input2', ModuleInput)
+inputs.register('f2b_input', ModuleInput)
