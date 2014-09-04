@@ -17,7 +17,9 @@ class BaseFilter(object):
         if isinstance(data, list):
             result['data'] = []
             for line in data:
-                result['data'].append(self.filter(line))
+                filtered = self.filter(line)
+                if filtered:
+                    result['data'].append(filtered)
         else:
             result['data'] = self.filter(data)
 
