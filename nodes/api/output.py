@@ -1,4 +1,4 @@
-from core.nodes.outputs import OutputSocket
+from core.helpers.outputs import OutputSocket
 from core.managers import outputs
 
 

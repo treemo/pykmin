@@ -1,5 +1,5 @@
 import asyncio
-from core.nodes.inputs import SocketInput
+from core.helpers.inputs import SocketInput
 from core.managers import inputs
 
 

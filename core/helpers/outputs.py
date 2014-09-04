@@ -31,6 +31,7 @@ class OutputFile(Output):
     def write(self, data):
         return data
 
+
 class OutputSocket(Output):
     transport = None
 

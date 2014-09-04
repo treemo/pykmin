@@ -1,4 +1,4 @@
-from core.nodes.inputs import FileInput
+from core.helpers.inputs import FileInput
 from core.managers import inputs
 
 

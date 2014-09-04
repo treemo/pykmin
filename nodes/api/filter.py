@@ -1,5 +1,5 @@
 from core.managers import filters, inputs
-from core.nodes.filters import BaseFilter
+from core.helpers.filters import BaseFilter
 
 
 class OrderHandler(BaseFilter):

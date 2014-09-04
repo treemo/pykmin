@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 import logging
 import os
 from pathlib import Path
@@ -105,3 +106,33 @@ class FileInput(Input):
     def stop(self):
         self.obs.stop()
         self.obs.join()
+
+
+class HttpInput(Input):
+    url = ''
+    method = 'GET'
+    delay = 2
+
+    def start(self):
+        super(HttpInput, self).start()
+        if not self.url:
+            raise NotImplemented('You must set URL')
+
+        asyncio.Task(self.watcher())
+
+    @asyncio.coroutine
+    def watcher(self):
+        while True:
+            task = asyncio.async(self.get_page(), loop=self.loop)
+            task.add_done_callback(self.next_step)
+            yield from asyncio.sleep(self.delay)
+
+
+    @asyncio.coroutine
+    def get_page(self):
+        resp = yield from aiohttp.request(self.method, self.url)
+        body = yield from resp.read()
+        return {'data': body.decode()}
+
+    def next_step(self, task):
+        tasks.add_to_queue(self.name, task)
