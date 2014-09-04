@@ -5,14 +5,14 @@ class Output(object):
         self.name = name
 
     def start(self, task):
-        pass
+        self.data = task.result()['data']
 
 
 class OutputFile(Output):
     file = ''
 
     def start(self, task):
-        self.data = task.result()['data']
+        super(OutputFile, self).start(task)
 
         if not self.file:
             raise AttributeError('You need to set file attribute')
@@ -27,8 +27,8 @@ class OutputSocket(Output):
     transport = None
 
     def start(self, task):
+        super(OutputSocket, self).start(task)
         self.transport = task.result()['transport']
-        self.data = task.result()['data']
         self.data_send()
 
     def data_send(self, data=None):
