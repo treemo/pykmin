@@ -7,6 +7,7 @@ def treat_data(data, transport):
     return {'data': data, 'transport': transport}
 
 
+@inputs.register('pykmin_api_listener')
 class ModuleInput(SocketInput):
     port = 8080
 
@@ -14,4 +15,3 @@ class ModuleInput(SocketInput):
         self.treatment = treat_data
         super(ModuleInput, self).start()
 
-inputs.register('pykmin_api_listener', ModuleInput)

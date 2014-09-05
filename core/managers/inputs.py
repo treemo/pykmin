@@ -4,9 +4,11 @@ __all__ = ('register',)
 
 _REGISTRY = OrderedDict()
 
-
-def register(name, object):
-    _REGISTRY[name] = object(name)
+def register(name):
+    def inner(orig_class):
+        _REGISTRY[name] = orig_class(name)
+        return orig_class
+    return inner
 
 
 def get_element(name):
