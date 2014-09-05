@@ -2,6 +2,7 @@ from core.managers import filters
 from core.helpers.filters import BaseFilter
 
 
+@filters.register('f2b_filter')
 class ModuleFilter(BaseFilter):
 
     def filter(self, data):
@@ -11,4 +12,3 @@ class ModuleFilter(BaseFilter):
             return [data.split()[-1], 'unban']
         return None
 
-filters.register('f2b_filter', ModuleFilter)

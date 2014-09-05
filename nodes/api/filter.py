@@ -2,6 +2,7 @@ from core.managers import filters, inputs
 from core.helpers.filters import BaseFilter
 
 
+@filters.register('pykmin_api_filter')
 class OrderHandler(BaseFilter):
 
     def filter(self, data):
@@ -25,5 +26,3 @@ class OrderHandler(BaseFilter):
             return '\n'.join(ret)
 
         return 'Error ...'
-
-filters.register('pykmin_api_filter', OrderHandler)

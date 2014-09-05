@@ -7,7 +7,6 @@ class BaseFilter(object):
         self.name = name
 
     def start(self, task, prev):
-
         result = task.result()
         if not result or 'data' not in result:
             return
