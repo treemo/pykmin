@@ -1,3 +1,5 @@
+import logging
+
 class Output(object):
     data = ''
 
@@ -46,3 +48,19 @@ class OutputSocket(Output):
 
         self.transport.write(data.encode())
         self.transport.close()
+
+
+class OutputLogger(Output):
+
+    def __init__(self, name):
+        super(OutputLogger, self).__init__(name)
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    def start(self, task):
+        super(OutputLogger, self).start(task)
+
+        msg = self.write(self.data)
+        self.logger.critical(msg)
+
+    def write(self, data):
+        return data
