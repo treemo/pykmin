@@ -37,7 +37,7 @@ class OutputFile(Output):
 class OutputSocket(Output):
     transport = None
 
-    def start(self, task):
+    def start(self, task, prev):
         super(OutputSocket, self).start(task)
         self.transport = task.result()['transport']
         self.data_send()

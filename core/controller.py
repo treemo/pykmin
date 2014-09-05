@@ -1,7 +1,7 @@
 import asyncio
 import yaml
 import logging.config
-from core.managers import inputs, outputs, nodes, filters, tasks
+from core.managers import nodes, modules, tasks
 from functools import reduce
 
 
@@ -25,25 +25,20 @@ class Controller(object):
         with open('configs/mapping.conf') as f:
             self.mapping = yaml.load(f)
 
-    def _import_nodes(self, submodule_name):
-        for module in nodes._REGISTRY:
+    def _import_nodes(self, module_name):
+        for node in nodes._REGISTRY:
             try:
-                input_path = 'nodes.%s.%s' % (module, submodule_name)
+                input_path = 'nodes.%s.%s' % (node, module_name)
                 __import__(input_path)
             except ImportError as e:
                 self.logger.error(e)
 
-    def autodiscover_inputs(self):
-        self._import_nodes('input')
-        for name in inputs._REGISTRY:
+    def autodiscover_modules(self):
+        self._import_nodes('modules')
+        for name in modules._REGISTRY:
             if name in self.mapping:
-                inputs._REGISTRY[name].start()
-
-    def autodiscover_filters(self):
-        self._import_nodes('filter')
-
-    def autodiscover_outputs(self):
-        self._import_nodes('output')
+                modules.add_input(name)
+                modules._REGISTRY[name].start()
 
     @asyncio.coroutine
     def handle_finished_tasks(self):
@@ -61,10 +56,7 @@ class Controller(object):
                     next_steps = next_steps.split()
 
                 for next_step in next_steps:
-                    if next_step and 'output' in next_step:
-                        outputs.get_element(next_step).start(t_object)
-                    elif next_step and 'filter' in next_step:
-                        filters.get_element(next_step).start(t_object, path)
+                    modules.get_element(next_step).start(t_object, path)
                 tasks.remove_from_queue(name, t_object, prev)
             yield from asyncio.sleep(0.0000000005)
 
