@@ -6,6 +6,7 @@ class ToFile(OutputFile):
     file = 'f2b.log'
 
     def write(self, data):
-        return '%s is %sned!' % data
+        ip, state = data
+        return '%s is %sned!' % (ip, state)
 
 outputs.register('f2b_output', ToFile)
