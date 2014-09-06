@@ -6,15 +6,15 @@ class Output(object):
     def __init__(self, name):
         self.name = name
 
-    def start(self, task):
+    def start(self, task, prev):
         self.data = task.result()['data']
 
 
 class OutputFile(Output):
     file = ''
 
-    def start(self, task):
-        super(OutputFile, self).start(task)
+    def start(self, *args):
+        super(OutputFile, self).start(*args)
 
         if not self.file:
             raise AttributeError('You need to set file attribute')
@@ -37,8 +37,8 @@ class OutputFile(Output):
 class OutputSocket(Output):
     transport = None
 
-    def start(self, task, prev):
-        super(OutputSocket, self).start(task)
+    def start(self, task, *args):
+        super(OutputSocket, self).start(task, *args)
         self.transport = task.result()['transport']
         self.data_send()
 
@@ -56,8 +56,8 @@ class OutputLogger(Output):
         super(OutputLogger, self).__init__(name)
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def start(self, task):
-        super(OutputLogger, self).start(task)
+    def start(self, *args):
+        super(OutputLogger, self).start(*args)
 
         msg = self.write(self.data)
         self.logger.critical(msg)
