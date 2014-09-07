@@ -1,4 +1,6 @@
 import asyncio
+import functools
+import signal
 import yaml
 import logging.config
 from core.managers import nodes, modules, tasks
@@ -61,5 +63,12 @@ class Controller(object):
             yield from asyncio.sleep(0.0000000005)
 
     def start(self):
+        for signame in ('SIGINT', 'SIGTERM'):
+            self.loop.add_signal_handler(getattr(signal, signame),
+                                         functools.partial(self.stop, signame))
         asyncio.async(self.handle_finished_tasks(), loop=self.loop)
         self.loop.run_forever()
+
+    def stop(self, signame):
+        print("Pykmin exited with signal %s" % signame)
+        self.loop.stop()
