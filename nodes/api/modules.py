@@ -26,14 +26,16 @@ class OrderHandler(BaseFilter):
         if order[0] == 'stop':
             module = order[1]
             module_instance = modules.get_element(module)
-            module_instance.stop()
-            return 'Module sucessfully stopped'
+            if module_instance:
+                module_instance.stop()
+                return 'Module sucessfully stopped'
 
         if order[0] == 'start':
             module = order[1]
             module_instance = modules.get_element(module)
-            module_instance.start()
-            return 'Module sucessfully started'
+            if module_instance:
+                module_instance.start()
+                return 'Module sucessfully started'
 
         if order[0] == 'list':
             ret = []

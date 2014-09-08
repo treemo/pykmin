@@ -3,9 +3,11 @@ import aiohttp
 import logging
 import os
 from pathlib import Path
-from core.managers import tasks
+from aiohttp.errors import OsConnectionError
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+
+from core.managers import tasks
 
 
 class BaseProtocol(asyncio.Protocol):
@@ -112,17 +114,22 @@ class HttpInput(Input):
     url = ''
     method = 'GET'
     delay = 2
+    stopped = False
 
     def start(self):
         super(HttpInput, self).start()
         if not self.url:
             raise NotImplemented('You must set URL')
 
+        self.stopped = False
         asyncio.Task(self.watcher())
+
+    def stop(self):
+        self.stopped = True
 
     @asyncio.coroutine
     def watcher(self):
-        while True:
+        while not self.stopped:
             task = asyncio.async(self.get_page(), loop=self.loop)
             task.add_done_callback(self.next_step)
             yield from asyncio.sleep(self.delay)
@@ -130,9 +137,13 @@ class HttpInput(Input):
 
     @asyncio.coroutine
     def get_page(self):
-        resp = yield from aiohttp.request(self.method, self.url)
-        body = yield from resp.read()
-        return {'data': body.decode()}
+        try:
+            resp = yield from aiohttp.request(self.method, self.url)
+            #body = yield from resp.read()
+            data = resp.status
+        except OsConnectionError as e:
+            data = ''
+        return {'data': data}
 
     def next_step(self, task):
         tasks.add_to_queue(self.name, task)

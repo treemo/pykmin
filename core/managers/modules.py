@@ -13,7 +13,7 @@ def register(name):
 
 
 def get_element(name):
-    return _REGISTRY.get(name)
+    return _REGISTRY.get(name, None)
 
 
 def get_all_elements():
