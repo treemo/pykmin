@@ -60,7 +60,7 @@ class Controller(object):
                 for next_step in next_steps:
                     modules.get_element(next_step).start(t_object, path)
                 tasks.remove_from_queue(name, t_object, prev)
-            yield from asyncio.sleep(0.5)
+            yield from asyncio.sleep(0.005)
 
     def start(self):
         for signame in ('SIGINT', 'SIGTERM'):
