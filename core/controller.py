@@ -28,7 +28,7 @@ class Controller(object):
             self.mapping = yaml.load(f)
 
     def _import_nodes(self, module_name):
-        for node in nodes._REGISTRY:
+        for node in nodes.get_all():
             try:
                 input_path = 'nodes.%s.%s' % (node, module_name)
                 __import__(input_path)
@@ -37,10 +37,10 @@ class Controller(object):
 
     def autodiscover_modules(self):
         self._import_nodes('modules')
-        for name in modules._REGISTRY:
+        for name in modules.get_all_elements():
             if name in self.mapping:
                 modules.add_input(name)
-                modules._REGISTRY[name].start()
+                modules.get_element(name).start()
 
     @asyncio.coroutine
     def handle_finished_tasks(self):

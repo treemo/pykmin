@@ -9,3 +9,7 @@ def load_modules():
             if os.path.isdir(os.path.join('nodes', module))
             and module != '__pycache__']
 load_modules()
+
+
+def get_all():
+    return _REGISTRY
