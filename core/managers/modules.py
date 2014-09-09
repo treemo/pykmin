@@ -5,6 +5,7 @@ __all__ = ('register',)
 _REGISTRY = OrderedDict()
 _INPUTS = set()
 
+
 def register(name):
     def inner(orig_class):
         _REGISTRY[name] = orig_class(name)
